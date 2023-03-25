@@ -1,0 +1,117 @@
+@font-face {
+  font-family: "Oxygen";
+  src: url("../fonts/Oxygen-Bold.ttf");
+}
+body {
+  font-family: serif;
+  background-color: #0f172a;
+  color: #7dd3fc;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+#signup {
+  width: 100%;
+  background-color: rgb(11, 55, 142);
+  padding-top: 50px;
+}
+#signup .signup-main {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(12, 112, 112);
+  padding: 20px;
+}
+#signup .signup-main .logo {
+  width: 50%;
+}
+
+#direct-signup {
+  width: 100%;
+  margin-top: 5%;
+  padding-top: 50px;
+}
+#direct-signup .direct-signup-main {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+  margin: auto;
+  border: 1px solid rgb(30, 41, 59);
+  border-radius: 8px;
+}
+#direct-signup .ant-modal-content {
+  background-color: rgb(30, 41, 59);
+}
+#direct-signup .ant-input {
+  background-color: rgb(30, 41, 59);
+  color: #fff;
+}
+#direct-signup .ant-input-password {
+  background-color: rgb(30, 41, 59);
+}
+#direct-signup .ant-form-item-required {
+  color: #b8c2cf !important;
+  font-size: 16px;
+}
+#direct-signup .ant-form-item-required::before {
+  font-size: 12px;
+}
+
+#login {
+  width: 100%;
+  padding-top: 50px;
+  margin-top: 7%;
+}
+#login .login-main {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+  margin: auto;
+  border: 1px solid rgb(30, 41, 59);
+  border-radius: 8px;
+}
+#login .ant-input {
+  background-color: rgb(30, 41, 59);
+  color: #fff;
+}
+#login .ant-input-password {
+  background-color: rgb(30, 41, 59);
+}
+#login .ant-form-item-required {
+  color: #b8c2cf !important;
+  font-size: 16px;
+}
+
+#reset-password {
+  width: 100%;
+  padding-top: 50px;
+  margin-top: 7%;
+}
+#reset-password .reset-password-main {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  padding: 80px 0;
+  margin: auto;
+  border: 1px solid rgb(30, 41, 59);
+  border-radius: 8px;
+}
+#reset-password .ant-input {
+  background-color: rgb(30, 41, 59);
+  color: #fff;
+}
+#reset-password .ant-input-password {
+  background-color: rgb(30, 41, 59);
+}
+#reset-password .ant-form-item-required {
+  color: #b8c2cf !important;
+  font-size: 16px;
+}
+#reset-password .ant-form-item-required::before {
+  font-size: 12px;
+}/*# sourceMappingURL=style.css.map */
