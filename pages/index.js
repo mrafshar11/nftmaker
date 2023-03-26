@@ -106,7 +106,7 @@ export default function Home() {
             </Form>
 
             <div className='logo'>
-              <Image alt='' src='./images/baby.jpg' />
+              <Image alt='' src='/images/baby.jpg' width={300} height={300} />
             </div>
           </div>
         </div>

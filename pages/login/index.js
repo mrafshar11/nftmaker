@@ -1,5 +1,6 @@
 
 import { Button, Form, Input, Checkbox, Row, Col } from 'antd';
+import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link';
 
 const layout = {
@@ -27,51 +28,58 @@ const validateMessages = {
 const onFinish = (values) => {
     console.log(values);
 };
-const Login = () => (
-    <section id='login'>
-        <div className='container'>
-            <div className='login-main'>
-                <Form
-                    {...layout}
-                    name="nest-messages"
-                    onFinish={onFinish}
-                    style={{
-                        maxWidth: 600,
-                        width: '60%'
-                    }}
-                    validateMessages={validateMessages}
-                >
-                    <Form.Item
-                        name={['username']}
-                        label="username"
-                        labelCol={12}
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
+const Login = () => {
+
+    const { data: session } = useSession()
+    if (session) {
+        console.log('session', session);
+    }
+
+    return (
+        <section id='login'>
+            <div className='container'>
+                <div className='login-main'>
+                    <Form
+                        {...layout}
+                        name="nest-messages"
+                        onFinish={onFinish}
                         style={{
-                            marginBottom: "65px"
+                            maxWidth: 600,
+                            width: '60%'
                         }}
+                        validateMessages={validateMessages}
                     >
-                        <Input size='large' />
-                    </Form.Item>
-                    <Form.Item
-                        name={['password']}
-                        label='password'
-                        labelCol={12}
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
-                        style={{
-                            marginBottom: "40px"
-                        }}
-                    >
-                        <Input.Password size='large' />
-                    </Form.Item>
-                    {/* <Form.Item
+                        <Form.Item
+                            name={['username']}
+                            label="username"
+                            labelCol={12}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                            style={{
+                                marginBottom: "65px"
+                            }}
+                        >
+                            <Input size='large' />
+                        </Form.Item>
+                        <Form.Item
+                            name={['password']}
+                            label='password'
+                            labelCol={12}
+                            rules={[
+                                {
+                                    required: true,
+                                },
+                            ]}
+                            style={{
+                                marginBottom: "40px"
+                            }}
+                        >
+                            <Input.Password size='large' />
+                        </Form.Item>
+                        {/* <Form.Item
                         wrapperCol={{
                             ...layout.wrapperCol,
                             offset: 4,
@@ -90,41 +98,46 @@ const Login = () => (
                         </Row>
                     </Form.Item> */}
 
-                    <Form.Item wrapperCol={{
-                        span: 16,
-                        offset: 6
-                    }}>
-                        <Row>
-                            <Col span={12}>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox style={{ color: '#fff' }}>Remember me</Checkbox>
-                                </Form.Item>
-                            </Col>
-                            <Col span={12} >
-                                <Link href={'/'} className="login-form-forgot">
-                                    Forgot password ?
-                                </Link>
-                            </Col>
-                        </Row>
-                    </Form.Item>
+                        <Form.Item wrapperCol={{
+                            span: 16,
+                            offset: 6
+                        }}>
+                            <Row>
+                                <Col span={12}>
+                                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                                        <Checkbox style={{ color: '#fff' }}>Remember me</Checkbox>
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12} >
+                                    <Link href={'/'} className="login-form-forgot">
+                                        Forgot password ?
+                                    </Link>
+                                </Col>
+                            </Row>
+                        </Form.Item>
 
-                    <Form.Item wrapperCol={{
-                        span: 16,
-                        offset: 6
-                    }}>
-                        <Col span={12} style={{marginBottom:"15px"}}>
-                            <Button type="primary" htmlType="submit" className="login-form-button" size='large' block
-                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
-                                Log in
-                            </Button>
-                        </Col>
-                        <Col span={12} style={{ color: '#fff' }}>
-                            Or <Link href={"/"}>register now!</Link>
-                        </Col>
-                    </Form.Item>
-                </Form>
+                        <Form.Item wrapperCol={{
+                            span: 16,
+                            offset: 6
+                        }}>
+                            <Col span={12} style={{ marginBottom: "15px" }}>
+                                <Button type="primary" htmlType="submit" className="login-form-button" size='large' block
+                                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
+                                    Log in
+                                </Button>
+                            </Col>
+                            <Col span={12} style={{ color: '#fff' }}>
+                                Or <Link href={"/"}>register now!</Link>
+                            </Col>
+                        </Form.Item>
+                    </Form>
+                    <>
+                        Not signed in <br />
+                        <button onClick={() => signIn()}>Sign in</button>
+                    </>
+                </div>
             </div>
-        </div>
-    </section>
-);
+        </section>
+    )
+};
 export default Login;
