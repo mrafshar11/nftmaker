@@ -10,8 +10,10 @@ export default NextAuth({
     //   clientSecret: process.env.APPLE_SECRET,
     // }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
+      clientId: '719835688215-8nrdo2r7av9ui321irvqtj7ff0rhur3d.apps.googleusercontent.com',
+      // clientId: process.env.GOOGLE_ID,
+      clientSecret: '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',
+      // clientSecret: process.env.GOOGLE_SECRET,
     })
   ],
 })
