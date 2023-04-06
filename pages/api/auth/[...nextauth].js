@@ -16,7 +16,13 @@ export default NextAuth({
       // clientSecret: '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',
       // clientSecret: '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',
       clientSecret: process.env.GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true
-    })
+      allowDangerousEmailAccountLinking: true,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }}
+      })
   ],
 })
