@@ -79,24 +79,7 @@ const Login = () => {
                         >
                             <Input.Password size='large' />
                         </Form.Item>
-                        {/* <Form.Item
-                        wrapperCol={{
-                            ...layout.wrapperCol,
-                            offset: 4,
-                        }}
-                    >
-                        <Row>
-                            <Col span={8}>
-                                <Button type="primary" htmlType="submit" size='large'
-                                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
-                                    Submit
-                                </Button>
-                            </Col>
-                            <Col span={12} offset={4}>
-                                <Link href={'/'} >forget password ?</Link>
-                            </Col>
-                        </Row>
-                    </Form.Item> */}
+                       
 
                         <Form.Item wrapperCol={{
                             span: 16,
