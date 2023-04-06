@@ -2,9 +2,8 @@ import Head from 'next/head';
 import Link from "next/link";
 import { Button, Form, Input, InputNumber } from 'antd';
 import Image from "next/image";
-import { Button, Form, Input, Checkbox, Row, Col } from 'antd';
+import { Checkbox, Row, Col } from 'antd';
 import { useSession, signIn, signOut } from "next-auth/react"
-import Link from 'next/link';
 
 
 const layout = {
