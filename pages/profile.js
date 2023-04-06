@@ -1,4 +1,6 @@
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+
 
 export default function Page() {
   const { data: session, status, update } = useSession()
@@ -23,5 +25,5 @@ export default function Page() {
     )
   }
 
-  return <a href="/api/auth/signin">Sign in</a>
+  return <Link href="/api/auth/signin">Sign in</Link>
 }
