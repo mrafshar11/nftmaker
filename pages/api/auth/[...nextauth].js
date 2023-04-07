@@ -18,7 +18,7 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
       authorization: {
-        params: { scope: "openid " }
+        params: { scope: "openid email profile " }
       }
     })
   ],
