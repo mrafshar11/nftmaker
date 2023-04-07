@@ -18,12 +18,9 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
       authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code"
-        }}
-      })
+        params: { scope: "openid " }
+      }
+    })
   ],
   theme: {
     colorScheme: "light",
