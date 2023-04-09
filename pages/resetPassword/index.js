@@ -79,19 +79,13 @@ const ResetPassword = () => (
                         <Input.Password size='large' />
                     </Form.Item>
                     <Form.Item
-                        wrapperCol={{
-                            ...layout.wrapperCol,
-                            offset: 4,
-                        }}
                     >
-                        <Row>
-                            <Col span={8}>
-                                <Button type="primary" htmlType="submit" size='large'
-                                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
-                                    Submit
-                                </Button>
-                            </Col>
-                        </Row>
+                        <Col span={8} offset={16}>
+                            <Button type="primary" htmlType="submit" size='large' block={true}
+                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
+                                Submit
+                            </Button>
+                        </Col>
                     </Form.Item>
                 </Form>
             </div>

@@ -92,7 +92,7 @@ const Login = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col span={12} >
-                                    <Link href={'/'} className="login-form-forgot">
+                                    <Link href={'/resetPassword'} className="login-form-forgot">
                                         Forgot password ?
                                     </Link>
                                 </Col>
@@ -114,10 +114,6 @@ const Login = () => {
                             </Col>
                         </Form.Item>
                     </Form>
-                    <>
-                        Not signed in <br />
-                        <button onClick={() => signIn()}>Sign in</button>
-                    </>
                 </div>
             </div>
         </section>
