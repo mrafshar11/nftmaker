@@ -68,7 +68,6 @@ body {
 }
 #login .login-main {
   width: 50%;
-  display: flex;
   justify-content: center;
   padding: 80px 0;
   margin: auto;
@@ -114,4 +113,14 @@ body {
 }
 #reset-password .ant-form-item-required::before {
   font-size: 12px;
+}
+
+.ant-upload-list-item-container {
+  width: 250px !important;
+  height: 250px !important;
+}
+
+.ant-upload .ant-upload-select {
+  width: 250px !important;
+  height: 250px !important;
 }/*# sourceMappingURL=style.css.map */
