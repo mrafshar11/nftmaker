@@ -1,9 +1,12 @@
 import Head from 'next/head';
 import Link from "next/link";
-import { Button, Form, Input, InputNumber } from 'antd';
+import { Button, Form, Input, InputNumber, Descriptions, Avatar, Upload } from 'antd';
+import { GoogleOutlined, AppleOutlined } from '@ant-design/icons';
+import ImgCrop from 'antd-img-crop';
 import Image from "next/image";
 import { Checkbox, Row, Col } from 'antd';
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useState } from 'react';
 
 
 const layout = {
@@ -38,6 +41,7 @@ export default function Home() {
   if (session) {
     console.log('session', session);
   }
+
   return (
     <>
       <Head>
@@ -48,85 +52,61 @@ export default function Home() {
       <section id='login'>
         <div className='container'>
           <div className='login-main'>
-            <Form
-              {...layout}
-              name="nest-messages"
-              onFinish={onFinish}
-              style={{
-                maxWidth: 600,
-                width: '60%'
-              }}
-              validateMessages={validateMessages}
-            >
-              <Form.Item
-                name={['username']}
-                label="username"
-                labelCol={12}
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-                style={{
-                  marginBottom: "65px"
-                }}
-              >
-                <Input size='large' />
-              </Form.Item>
-              <Form.Item
-                name={['password']}
-                label='password'
-                labelCol={12}
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-                style={{
-                  marginBottom: "40px"
-                }}
-              >
-                <Input.Password size='large' />
-              </Form.Item>
-
-
-              <Form.Item wrapperCol={{
-                span: 16,
-                offset: 6
-              }}>
-                <Row>
-                  <Col span={12}>
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                      <Checkbox style={{ color: '#fff' }}>Remember me</Checkbox>
-                    </Form.Item>
-                  </Col>
-                  <Col span={12} >
-                    <Link href={'/'} className="login-form-forgot">
-                      Forgot password ?
-                    </Link>
-                  </Col>
-                </Row>
-              </Form.Item>
-
-              <Form.Item wrapperCol={{
-                span: 16,
-                offset: 6
-              }}>
-                <Col span={12} style={{ marginBottom: "15px" }}>
-                  <Button type="primary" htmlType="submit" className="login-form-button" size='large' block
+            <Col offset={7} span={10}>
+              <Button block={true} style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}
+                onClick={() => signIn("google", "https://mydom-1212.vercel.app/dashboard")}>
+                Sign in With Google
+                <Image alt="Picture of the author"
+                  width={20}
+                  height={20}
+                  style={{ borderRadius: "50%", marginLeft: "15px" }}
+                  src='/images/google.png' />
+              </Button>
+            </Col>
+            <Col offset={7} span={10}>
+              <Button
+                block={true}
+                style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}
+                onClick={() => signIn("Apple", "https://mydom-1212.vercel.app/dashboard")}>
+                Sign in With Apple
+                <Image alt="Picture of the author"
+                  width={20}
+                  height={20}
+                  style={{ borderRadius: "50%", marginLeft: "15px" }}
+                  src='/images/apple.png' />
+              </Button>
+            </Col>
+            <Col offset={7} span={10}>
+              <Button href='./directSignup'
+                block={true}
+                style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}>
+                Sign in With Email
+                <Image alt="Picture of the author"
+                  width={20}
+                  height={20}
+                  style={{ marginLeft: "15px", marginTop: "5px" }}
+                  src='/images/email.png' />
+              </Button>
+            </Col>
+            <Col offset={7} span={10}>
+              <hr />
+              <Row  style={{ marginTop: "25px" }}>
+                <Col offset={4} span={4}>
+                  <p  style={{ fontSize: "18px" }}>
+                    or
+                  </p>
+                </Col>
+                <Col offset={5} span={11}>
+                  <Button href='./login'
+                  block={true}
+                    size='large'
                     style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
-                    Log in
+                    Login
                   </Button>
                 </Col>
-                <Col span={12} style={{ color: '#fff' }}>
-                  Or <Link href={"/"}>register now!</Link>
-                </Col>
-              </Form.Item>
-            </Form>
-            <>
-              Not signed in <br />
-              <button onClick={() => signIn()}>Sign in</button>
-            </>
+              </Row>
+
+            </Col>
           </div>
         </div>
       </section>
