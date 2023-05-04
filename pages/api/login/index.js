@@ -1,0 +1,40 @@
+import userModel from "../../../config/database/models/user";
+import mongoose from 'mongoose';
+const jwt = require("jsonwebtoken");
+
+const db_uri = process.env.DB_URI;
+const db = async () => mongoose.connect(db_uri).then(console.log('connected')).catch(err => console.log(err));
+
+const loginUser = async (req, res) => {
+    try {
+        let user = await userModel.findOne({ email: req.body.email, password: req.body.password });
+        if (!user) {
+            res.status(404)
+            return
+        }
+        const token = jwt.sign({ email: user.email, password: user.password }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+        res.status(200).json({
+            token
+        });
+    } catch (error) {
+        res.send(error);
+    }
+};
+
+export default async function handler(req, res) {
+    const { method } = req;
+    db()
+
+    switch (method) {
+        case "POST":
+            await loginUser(req, res);
+            break;
+
+        default:
+            break;
+    }
+}
+
+

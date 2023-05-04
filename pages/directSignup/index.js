@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { Button, Form, Input, InputNumber, Row, Col, Modal } from 'antd';
 
 const layout = {
@@ -9,9 +10,6 @@ const layout = {
         span: 16,
     },
 };
-
-
-
 
 
 /* eslint-disable no-template-curly-in-string */
@@ -29,38 +27,37 @@ const validateMessages = {
 
 
 const DirectSignUp = () => {
-
+    const router = useRouter();
     const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
-    const [modalText, setModalText] = useState('please enter verify code sent your email');
-    const showModal = () => {
-        setOpen(true);
-    };
+    const [modalText, setModalText] = useState('this email already signed in');
 
-
-    const onFinish = (values) => {
-        console.log(values);
+    const onFinish = async (values) => {
         form.resetFields();
-        setOpen(true);
-    };
+        try {
+            const data = await fetch("/api/user/", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            });
 
-    // console.log(name);
+            if (data.status == 401) {
+                setOpen(true);
+            } else if (data.status == 201) {
+                router.push({ pathname: '/pleaseVerify'})
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
 
     const handleOk = () => {
-        setModalText('The modal will be closed after two seconds');
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setOpen(false);
-            setConfirmLoading(false);
-        }, 2000);
-    };
-    const handleCancel = () => {
-        console.log('Clicked cancel button');
         setOpen(false);
     };
-
 
 
     return (
@@ -79,7 +76,7 @@ const DirectSignUp = () => {
                         validateMessages={validateMessages}
                     >
                         <Row>
-                            <Col span={11}>
+                            <Col lg={{ span: 11, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['name']}
                                     label="Name"
@@ -95,9 +92,8 @@ const DirectSignUp = () => {
                                 >
                                     <Input size='large' value={'name'} />
                                 </Form.Item>
-
                             </Col>
-                            <Col span={11} offset={2}>
+                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['lastName']}
                                     label="LastName"
@@ -115,7 +111,7 @@ const DirectSignUp = () => {
                                 </Form.Item></Col>
                         </Row>
                         <Row>
-                            <Col span={11} >
+                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['username']}
                                     label="Username"
@@ -132,7 +128,7 @@ const DirectSignUp = () => {
                                     <Input size='large' />
                                 </Form.Item>
                             </Col>
-                            <Col span={11} offset={2}>
+                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['email']}
                                     label="Email"
@@ -152,7 +148,7 @@ const DirectSignUp = () => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={11} >
+                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['password']}
                                     label="Password"
@@ -169,7 +165,7 @@ const DirectSignUp = () => {
                                     <Input.Password size='large' />
                                 </Form.Item>
                             </Col>
-                            <Col span={11} offset={2}>
+                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['confirmPassword']}
                                     label="Confirm Password"
@@ -198,28 +194,22 @@ const DirectSignUp = () => {
                         </Row>
                         <>
                             <Modal
-                                title="Verify Email"
+                                title="Unacceptable email"
                                 open={open}
                                 onOk={handleOk}
-                                confirmLoading={confirmLoading}
-                                onCancel={handleCancel}
-                                cancelText='change email'
-                                okText='verify'
+                                onCancel={handleOk}
+                                okText='ok'
                             >
-                                <p style={{marginBottom:'5px'}}>{modalText} :</p>
-                                <p style={{color:'#9b9a9a',marginTop:'5px'}}>farafaraz@gmail.com</p>
-                                <Col span={12} >
-                                    <Input size='large' />
-                                </Col>
+                                <p style={{ marginBottom: '5px' }}>{modalText}</p>
                             </Modal>
                         </>
                         <Form.Item
                             wrapperCol={{
-                               span:4,
+                                span: 4,
                                 offset: 10
                             }}
                         >
-                            <Button type="primary" htmlType="submit" size='large' block
+                            <Button type="primary" htmlType="submit" size='large' block sm={{size:'small'}}
                                 style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
                                 Submit
                             </Button>

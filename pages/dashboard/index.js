@@ -1,16 +1,12 @@
 import Head from 'next/head';
 import Link from "next/link";
-import { Button, Form, Input, InputNumber, Descriptions, Avatar, Upload } from 'antd';
-import { AntDesignOutlined } from '@ant-design/icons';
+import { Button, Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import Image from "next/image";
-import { Checkbox, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useState } from 'react';
-
-
-
-
+import { useState, useEffect } from 'react';
+import jwt from "jsonwebtoken";
 import axios from "axios";
 
 
@@ -28,61 +24,49 @@ axios.interceptors.response.use(null, error => {
 });
 
 
-
-
-
-
-/* eslint-disable no-template-curly-in-string */
-const validateMessages = {
-    required: '${label} is required!',
-    types: {
-        email: '${label} is not a valid email!',
-        number: '${label} is not a valid number!',
-    },
-    number: {
-        range: '${label} must be between ${min} and ${max}',
-    },
-};
-
 /* eslint-enable no-template-curly-in-string */
 
 export default function Home() {
     const { data: session } = useSession()
-    if (session) {
-        console.log('session', session);
-    }
-
     const [fileList, setFileList] = useState([]);
+    const [decodedToken, setDecodedToken] = useState();
+
+    const jwtsecret = process.env.JWT_SECRET;
+    const url1 = process.env.URL1;
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const decoded = jwt.decode(token, jwtsecret);
+        if (Date.now() / 1000 < parseInt(decoded.exp)) {
+            setDecodedToken(decoded)
+        }
+    }
+        , [])
 
 
     const onChange = ({ fileList: newFileList }) => {
-        console.log(fileList);
         if (fileList.length < 2) {
             setFileList(newFileList);
         }
     };
 
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
 
-    const handleSend=async ()=>{
-let res=await axios.post('https://zero-right-api-l4ykvsnt5a-wl.a.run.app/upload_file/',fileList)
-console.log(res)
-console.log('mmd')
+    const handleSend = async () => {
+        let res = await axios.post(url1, fileList)
+        console.log(res);
     }
 
+    if (!decodedToken) {
+        return (
+            <div style={{ textAlign: "center", marginTop: "200px" }}>
+                <p >your login is expired</p>
+                <Button href='/login' block={true}
+                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)', width: "150px" }} >
+                    go to login page
+                </Button>
+            </div>
+        )
+    }
 
     return (
         <>
@@ -92,40 +76,70 @@ console.log('mmd')
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
 
-            <section style={{ border: "1px solid rgb(30 41 59)",borderRadius:"8px",marginTop:"20px" }}>
+            <section style={{ border: "1px solid rgb(30 41 59)", borderRadius: "8px", marginTop: "20px" }}>
                 <div className='container'>
                     <Row>
                         <Col style={{ marginTop: "30px", marginLeft: "40px" }}>
-                            <Image alt="Picture of the author"
+                            {/* <Image alt="Picture of the author"
                                 width={100}
                                 height={100}
                                 style={{ borderRadius: "50%" }}
-                                src='https://optimise2.assets-servd.host/maniacal-finch/production/animals/amur-tiger-01-01.jpg?w=1200&h=630&q=82&auto=format&fit=clip&dm=1658935145&s=42eaff37ee45905b3f1a70241c25d007' />
+                            // src='https://optimise2.assets-servd.host/maniacal-finch/production/animals/amur-tiger-01-01.jpg?w=1200&h=630&q=82&auto=format&fit=clip&dm=1658935145&s=42eaff37ee45905b3f1a70241c25d007'
+                            /> */}
                         </Col>
                     </Row>
                     <Row>
-                        <Col span={10} offset={2} style={{ marginTop: "50px", marginBottom: "50px" }}>
-                            <Descriptions title="User Info" >
-                                <Descriptions.Item label="UserName">Zhou Maomao</Descriptions.Item>
-                                <Descriptions.Item label="email">1810000000</Descriptions.Item>
-                            </Descriptions>
+                        <Col
+                            lg={{ span: 11, offset: 1 }}
+                            md={{ span: 13, offset: 2 }}
+                            sm={{ span: 14, offset: 2 }}
+                            xs={{ span: 14, offset: 2 }}
+                            style={{ marginTop: "50px", marginBottom: "50px" }}>
+                            <div style={{ display: "block" }}>
+                                <h3>User Info</h3>
+                                <p style={{ color: "#3bb944" }}>Username :
+                                    <span
+                                        style={{ color: "#c2ccce" }}>{session ? session.username : decodedToken.username}
+                                    </span>
+                                </p>
+                                <p style={{ color: "#3bb944" }}>email :
+                                    <span style={{ color: "#c2ccce" }}>
+                                        {session ? session.email : decodedToken.email}
+                                    </span>
+                                </p>
+                            </div>
                         </Col>
-                        <Col span={5} style={{ marginTop: "50px", marginBottom: "50px" }}>
+                        <Col
+                            lg={{ span: 5 }}
+                            md={{ span: 7 }}
+                            sm={{ span: 8 }}
+                            xs={{ span: 8 }}
+                            style={{ marginTop: "50px", marginBottom: "50px" }}>
                             <ImgCrop rotationSlider>
                                 <Upload
                                     maxCount={1}
                                     listType="picture-card"
                                     fileList={fileList}
                                     onChange={onChange}
+                                    style={{ color: "red" }}
                                 >
                                     {fileList.length < 1 && '+ Upload'}
                                 </Upload>
                             </ImgCrop>
                         </Col>
-                        <Col span={3} style={{ marginTop: "50px", marginBottom: "50px" }}>
-                        <Button block={true} onClick={e=>handleSend()}
-                                    style={{ backgroundColor: 'rgb(125 211 252)',color:'rgb(15 23 42)' }} >
-                                    Verify
+                        <Col
+                            lg={{ span: 3 }}
+                            md={{ span: 5, offset: 3 }}
+                            sm={{ span: 8, offset: 5 }}
+                            xs={{ span: 8, offset: 5 }}
+                            style={{ marginTop: "50px", marginBottom: "50px", color: "red" }}>
+                            <Button block={true} onClick={e => handleSend()}
+                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }} >
+                                Convert
+                            </Button>
+                            <Button href='/payment' block={true}
+                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)', marginTop: "25px" }} >
+                                Buy Subscription
                             </Button>
                         </Col>
                     </Row>

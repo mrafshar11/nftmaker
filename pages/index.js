@@ -1,9 +1,5 @@
 import Head from 'next/head';
-import Link from "next/link";
-import { Button, Form, Input, InputNumber, Descriptions, Avatar, Upload } from 'antd';
-import { GoogleOutlined, AppleOutlined } from '@ant-design/icons';
-import ImgCrop from 'antd-img-crop';
-import Image from "next/image";
+import { Button } from 'antd';
 import { Checkbox, Row, Col } from 'antd';
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from 'react';
@@ -32,15 +28,9 @@ const validateMessages = {
 
 /* eslint-enable no-template-curly-in-string */
 
-const onFinish = (values) => {
-  console.log(values);
-};
 
 export default function Home() {
   const { data: session } = useSession()
-  if (session) {
-    console.log('session', session);
-  }
 
   return (
     <>
@@ -52,7 +42,7 @@ export default function Home() {
       <section id='register'>
         <div className='container'>
           <div className='register-main'>
-            <Col offset={7} span={10}>
+            <Col lg={{ span: 11, offset: 7 }} md={{ span: 15, offset: 5 }}>
               <Button block={true} style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}
                 onClick={() => signIn("google", "https://mydom-1212.vercel.app/dashboard")}>
                 Sign in With Google
@@ -63,7 +53,7 @@ export default function Home() {
                   src='/images/google.png' />
               </Button>
             </Col>
-            <Col offset={7} span={10}>
+            <Col lg={{ span: 11, offset: 7 }} md={{ span: 15, offset: 5 }}>
               <Button
                 block={true}
                 style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}
@@ -76,7 +66,7 @@ export default function Home() {
                   src='/images/apple.png' />
               </Button>
             </Col>
-            <Col offset={7} span={10}>
+            <Col lg={{ span: 11, offset: 7 }} md={{ span: 15, offset: 5 }}>
               <Button href='./directSignup'
                 block={true}
                 style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}>
@@ -88,24 +78,23 @@ export default function Home() {
                   src='/images/email.png' />
               </Button>
             </Col>
-            <Col offset={7} span={10}>
+            <Col lg={{ span: 11, offset: 7 }} md={{ span: 15, offset: 5 }} sm={{ span: 7, offset: 2 }}>
               <hr />
-              <Row  style={{ marginTop: "25px" }}>
+              <Row style={{ marginTop: "25px" }}>
                 <Col offset={4} span={4}>
-                  <p  style={{ fontSize: "18px" }}>
+                  <p style={{ fontSize: "18px" }}>
                     or
                   </p>
                 </Col>
                 <Col offset={5} span={11}>
                   <Button href='./login'
-                  block={true}
+                    block={true}
                     size='large'
                     style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
                     Login
                   </Button>
                 </Col>
               </Row>
-
             </Col>
           </div>
         </div>
