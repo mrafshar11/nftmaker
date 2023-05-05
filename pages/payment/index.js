@@ -3,7 +3,7 @@ import Script from 'next/script'
 
 const Payment = () => {
     const pKey = process.env.PRICING_TABLE_ID;
-    const pId = process.env.PUBLISHABLE_KEY;
+    const pId =process.env.PUBLISHABLE_KEY;
 
     return (
         <section>

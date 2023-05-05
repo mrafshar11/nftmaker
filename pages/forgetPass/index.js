@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button, Form, Input, InputNumber, Row, Col, Modal } from 'antd';
+import { Button, Form, Input, InputNumber, Row, Col, Modal, Spin } from 'antd';
+
 
 const layout = {
     labelCol: {
@@ -34,11 +35,20 @@ const validateMessages = {
 const DirectSignUp = () => {
 
     const [form] = Form.useForm();
-    const [open, setOpen] = useState(false);
     const [isLoading, setIsloading] = useState(false);
-    const [modalText, setModalText] = useState();
-    const showModal = () => {
-        setOpen(true);
+
+    const error = () => {
+        Modal.error({
+            title: 'Error',
+            content: 'There is no user with this email',
+        });
+    };
+
+
+    const success = () => {
+        Modal.success({
+            content: 'we sent you an email... check and click it to change your password !',
+        });
     };
 
 
@@ -53,30 +63,30 @@ const DirectSignUp = () => {
                 },
                 body: JSON.stringify(values),
             });
-            console.log(res);
 
             if (res.status == 404) {
-                setModalText('There is no user with this email')
-                setOpen(true);
                 setIsloading(false);
+                error()
 
             } else if (res.status == 200) {
                 setIsloading(false);
-                setModalText('we sent a link to your email for reset your password ')
-                setOpen(true);
-
+                success()
             }
         } catch (error) {
             console.log(error);
         }
     };
 
-    // console.log(name);
 
 
-    const handleOk = () => {
-        setOpen(false);
-    };
+    if (isLoading) {
+        return (
+            <div>
+                <Spin style={{ margin: 'auto', width: "100%", marginTop: "200px" }} size="large" />
+            </div>
+        )
+    }
+
 
     return (
         <section id='login'>
@@ -112,15 +122,6 @@ const DirectSignUp = () => {
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <>
-                            <Modal
-                                title="Result"
-                                open={open}
-                                onOk={handleOk}
-                            >
-                                <p style={{ marginBottom: '5px' }}>{modalText}</p>
-                            </Modal>
-                        </>
                         <Form.Item
                             {...layout1}
                         >

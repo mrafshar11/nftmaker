@@ -4,10 +4,11 @@ import { Button, Result } from 'antd';
 
 const Success = () => (
   <Result
+
     status="success"
     title="Successfully reset your password"
     extra={[
-      <Button href='/login' >
+      <Button href='/login' key={'login'}>
         Go To Login Page
       </Button>,
     ]}

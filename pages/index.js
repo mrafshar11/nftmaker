@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import { Checkbox, Row, Col } from 'antd';
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from 'react';
+import Image from 'next/image';
 
 
 const layout = {
@@ -44,7 +45,7 @@ export default function Home() {
           <div className='register-main'>
             <Col lg={{ span: 11, offset: 7 }} md={{ span: 15, offset: 5 }}>
               <Button block={true} style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}
-                onClick={() => signIn("google", "https://mydom-1212.vercel.app/dashboard")}>
+                onClick={() => signIn("google", process.env.GOOGLE_REDIRECT_URI)}>
                 Sign in With Google
                 <Image alt="Picture of the author"
                   width={20}
@@ -57,7 +58,7 @@ export default function Home() {
               <Button
                 block={true}
                 style={{ height: "45px", display: "block", margin: "30px auto", fontSize: "17px" }}
-                onClick={() => signIn("Apple", "https://mydom-1212.vercel.app/dashboard")}>
+                onClick={() => signIn("Apple", process.env.GOOGLE_REDIRECT_URI)}>
                 Sign in With Apple
                 <Image alt="Picture of the author"
                   width={20}

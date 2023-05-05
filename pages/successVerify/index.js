@@ -7,7 +7,7 @@ const Success = () => (
     status="success"
     title="Successfully Purchased Cloud Server ECS!"
     extra={[
-      <Button href='/login'>
+      <Button href='/login' key={'login'}>
         Go To Login Page
       </Button>,
     ]}

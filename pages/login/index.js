@@ -4,6 +4,8 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import jwt from "jsonwebtoken";
+
 
 
 const layout = {
@@ -37,10 +39,9 @@ const validateMessages = {
 
 const Login = () => {
     const router = useRouter();
-    const [open, setOpen] = useState(false);
-    const [isLoading, setIsloading] = useState(true);
+    const [isLoading, setIsloading] = useState(false);
     const [form] = Form.useForm();
-    const [modalText, setModalText] = useState('email or password is wrong');
+    const [decodedToken, setDecodedToken] = useState();
 
 
     const { data: session } = useSession();
@@ -48,8 +49,20 @@ const Login = () => {
         console.log('session', session);
     }
 
-    const handleOk = () => {
-        setOpen(false);
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const decoded = jwt.decode(token, process.env.JWT_SECRET);
+        if (Date.now() / 1000 < parseInt(decoded?.exp)) {
+            setDecodedToken(decoded)
+        }
+    }
+        , [])
+
+    const error = () => {
+        Modal.error({
+            title: 'Not found',
+            content: 'email or password is wrong',
+        });
     };
 
 
@@ -65,16 +78,15 @@ const Login = () => {
                 },
                 body: JSON.stringify(values),
             });
-
-
-            if (res.status == 404) {
-                setOpen(true);
+            const data = await res.json();
+            if (res?.status == 404) {
+                error()
                 setIsloading(false);
-            } else if (res.status == 200) {
+            } else if (res?.status == 200) {
+                setIsloading(false);
+                localStorage.setItem("token", data?.token);
                 router.push({ pathname: '/dashboard' })
-                const data = await res.json()
-                localStorage.setItem("token", data.token);
-                setIsloading(false);
+
             }
         } catch (error) {
             console.log(error);
@@ -82,11 +94,26 @@ const Login = () => {
     };
 
 
-    if (isLoading) {
-        return <Spin />
+    if (decodedToken) {
+        return (
+            <div style={{ textAlign: "center", marginTop: "200px" }}>
+                <p >you already signed up</p>
+                <Button href='/dashboard' block={true}
+                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)', width: "150px" }} >
+                    go to dashboard
+                </Button>
+            </div>
+        )
     }
 
 
+    if (isLoading) {
+        return (
+            <div>
+                <Spin style={{ margin: 'auto', width: "100%", marginTop: "200px" }} size="large" />
+            </div>
+        )
+    }
 
     return (
         <section id='login'>
@@ -160,17 +187,6 @@ const Login = () => {
                                 Or <Link href={"/"}>register now!</Link>
                             </Col>
                         </Form.Item>
-                        <>
-                            <Modal
-                                title="Not Found"
-                                open={open}
-                                onOk={handleOk}
-                                onCancel={handleOk}
-                                okText='ok'
-                            >
-                                <p style={{ marginBottom: '5px' }}>{modalText}</p>
-                            </Modal>
-                        </>
                     </Form>
                 </div>
             </div>

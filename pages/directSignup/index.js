@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { Spin } from 'antd';
 import { Button, Form, Input, InputNumber, Row, Col, Modal } from 'antd';
 
 const layout = {
@@ -29,12 +30,20 @@ const validateMessages = {
 const DirectSignUp = () => {
     const router = useRouter();
     const [form] = Form.useForm();
-    const [open, setOpen] = useState(false);
-    const [modalText, setModalText] = useState('this email already signed in');
+    const [isLoading, setIsloading] = useState(false);
+
+
+    const error = () => {
+        Modal.error({
+            title: 'Error',
+            content: 'this email already signed in',
+        });
+    };
 
     const onFinish = async (values) => {
         form.resetFields();
         try {
+            setIsloading(true)
             const data = await fetch("/api/user/", {
                 method: "POST",
                 headers: {
@@ -45,9 +54,11 @@ const DirectSignUp = () => {
             });
 
             if (data.status == 401) {
-                setOpen(true);
+                setIsloading(false);
+                error();
             } else if (data.status == 201) {
-                router.push({ pathname: '/pleaseVerify'})
+                router.push({ pathname: '/pleaseVerify' })
+                setIsloading(false);
             }
         } catch (error) {
             console.log(error);
@@ -55,9 +66,13 @@ const DirectSignUp = () => {
     };
 
 
-    const handleOk = () => {
-        setOpen(false);
-    };
+    if (isLoading) {
+        return (
+            <div>
+                <Spin style={{ margin: 'auto', width: "100%", marginTop: "200px" }} size="large" />
+            </div>
+        )
+    }
 
 
     return (
@@ -111,7 +126,7 @@ const DirectSignUp = () => {
                                 </Form.Item></Col>
                         </Row>
                         <Row>
-                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
+                            <Col lg={{ span: 11, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['username']}
                                     label="Username"
@@ -148,7 +163,7 @@ const DirectSignUp = () => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
+                            <Col lg={{ span: 11, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['password']}
                                     label="Password"
@@ -192,28 +207,14 @@ const DirectSignUp = () => {
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <>
-                            <Modal
-                                title="Unacceptable email"
-                                open={open}
-                                onOk={handleOk}
-                                onCancel={handleOk}
-                                okText='ok'
-                            >
-                                <p style={{ marginBottom: '5px' }}>{modalText}</p>
-                            </Modal>
-                        </>
-                        <Form.Item
-                            wrapperCol={{
-                                span: 4,
-                                offset: 10
-                            }}
-                        >
-                            <Button type="primary" htmlType="submit" size='large' block sm={{size:'small'}}
-                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
-                                Submit
-                            </Button>
-                        </Form.Item>
+                        <Row>
+                            <Col lg={{ span: 6, offset: 9 }} md={{ span: 6, offset: 10 }} sm={{ span: 20, offset: 1 }}>
+                                <Button type="primary" htmlType="submit" size='large' block sm={{ size: 'small' }}
+                                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }}>
+                                    Submit
+                                </Button>
+                            </Col>
+                        </Row>
                     </Form>
                 </div>
             </div>

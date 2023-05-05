@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { sendEmail } from "../../../config/mailer";
 const jwt = require("jsonwebtoken");
 
-const db_uri = process.env.DB_URI;
+const db_uri = process.env.JWT_SECRET;
 
 const db = async () => mongoose.connect(db_uri).then(console.log('ahsent'));
 
@@ -11,7 +11,7 @@ const addUser = async (req, res) => {
     try {
         let user = await userModel.findOne({ email: req.body.email });
         if (user) {
-            res.status(401)
+            res.status(401).json({ message: "this email exist" });
             return
         }
         await userModel.create({ ...req.body, verified: false });

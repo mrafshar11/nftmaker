@@ -3,8 +3,8 @@ import userModel from "../../../config/database/models/user";
 import { sendResetPassEmail } from "../../../config/mailer";
 const jwt = require("jsonwebtoken");
 
-const uri = 'mongodb://localhost:27017/nft';
-const db = async () => mongoose.connect(uri).then(console.log('ahsent'));
+const uri = process.env.DB_URI;
+const db = async () => mongoose.connect(uri).then(console.log('connect')).catch(err => console.log(err));
 
 
 
@@ -19,7 +19,7 @@ const addUser = async (req, res) => {
             });
             return
         }
-        const token = jwt.sign({ email: user.email, password: user.password }, 'hV37j4WfWxqz9r2', {
+        const token = jwt.sign({ email: user.email, password: user.password }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
         sendResetPassEmail(user.email, token)

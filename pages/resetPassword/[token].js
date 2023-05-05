@@ -1,6 +1,6 @@
-
+import { Spin } from 'antd';
 import { useState } from 'react';
-import { Button, Form, Input, InputNumber, Row, Col } from 'antd';
+import { Button, Form, Input, InputNumber, Row, Col, Modal } from 'antd';
 import { useRouter } from 'next/router';
 
 
@@ -30,12 +30,20 @@ const validateMessages = {
 const ResetPassword = () => {
     const router = useRouter();
     let token = router.query.token;
-
+    const [isLoading, setIsloading] = useState(false);
     const [form] = Form.useForm();
+
+
+    const error = () => {
+        Modal.error({
+            title: 'Error',
+            content: 'some thing went wrong',
+        });
+    };
+
 
     const onFinish = async (values) => {
         form.resetFields();
-        setOpen(true);
         try {
             const data = await fetch("/api/resetPass/", {
                 method: "POST",
@@ -47,8 +55,7 @@ const ResetPassword = () => {
             });
 
             if (data.status == 404) {
-                setModalText('some thing went wrong')
-                setOpen(true);
+                error()
                 setIsloading(false);
             } else if (data.status == 200) {
                 router.push({ pathname: '/successReset' })
@@ -58,6 +65,14 @@ const ResetPassword = () => {
             console.log(error);
         }
     };
+
+    if (isLoading) {
+        return (
+            <div>
+                <Spin style={{ margin: 'auto', width: "100%", marginTop: "200px" }} size="large" />
+            </div>
+        )
+    }
 
     return (
         <section id='reset-password'>

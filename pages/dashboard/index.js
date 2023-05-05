@@ -31,13 +31,13 @@ export default function Home() {
     const [fileList, setFileList] = useState([]);
     const [decodedToken, setDecodedToken] = useState();
 
-    const jwtsecret = process.env.JWT_SECRET;
+    const jwtsecret =process.env.JWT_SECRET;
     const url1 = process.env.URL1;
 
     useEffect(() => {
         const token = localStorage.getItem('token')
         const decoded = jwt.decode(token, jwtsecret);
-        if (Date.now() / 1000 < parseInt(decoded.exp)) {
+        if (Date.now() / 1000 < parseInt(decoded?.exp)) {
             setDecodedToken(decoded)
         }
     }
@@ -67,6 +67,8 @@ export default function Home() {
             </div>
         )
     }
+
+
 
     return (
         <>

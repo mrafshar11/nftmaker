@@ -11,7 +11,6 @@ const transporter = nodemailer.createTransport({
 
 
 exports.sendEmail = (email, token) => {
-    console.log(email,token)
     return transporter.sendMail({
       from: 'hadiansari1779@gmail.com',
       to: email,
@@ -22,7 +21,6 @@ exports.sendEmail = (email, token) => {
 
 
   exports.sendResetPassEmail = (email, token) => {
-    console.log(email,token)
     return transporter.sendMail({
       from: 'hadiansari1779@gmail.com',
       to: email,
