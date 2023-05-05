@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb"
 import mongoose from 'mongoose';
 
-const uri = 'mongodb://localhost:27017/nft';
+const uri =process.env.DB_URI;
 const options = {
   useUnifiedTopology: true,
   useNewUrlParser: true,
@@ -20,6 +20,6 @@ if (!global._mongoClientPromise) {
   clientPromise = global._mongoClientPromise
 
 
-export const connectMongo = async () => mongoose.connect(uri).then(console.log('ahsent'));
+export const connectMongo = async () => mongoose.connect(uri).then(console.log('connected'));
 
 // export default clientPromise
