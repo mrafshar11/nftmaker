@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'hadiansari1779@gmail.com',
-    pass: 'gnakcibatjqacgap'
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAI_PASSWORD
   }
 
 });
@@ -12,19 +12,19 @@ const transporter = nodemailer.createTransport({
 
 exports.sendEmail = (email, token) => {
     return transporter.sendMail({
-      from: 'hadiansari1779@gmail.com',
+      from: process.env.EMAIL_ADDRESS,
       to: email,
       subject: 'کد تایید اعتیار',
-      html: `http://localhost:3000/api/verify/${token}`
+      html: `${process.env.BASE_URL}/api/verify/${token}`
     })
   }
 
 
   exports.sendResetPassEmail = (email, token) => {
     return transporter.sendMail({
-      from: 'hadiansari1779@gmail.com',
+      from: process.env.EMAIL_ADDRESS,
       to: email,
       subject: 'کد تایید اعتیار',
-      html: `http://localhost:3000/resetPassword/${token}`
+      html: `${process.env.BASE_URL}/resetPassword/${token}`
     })
   }
