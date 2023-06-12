@@ -97,10 +97,10 @@ const Login = () => {
     if (decodedToken) {
         return (
             <div style={{ textAlign: "center", marginTop: "200px" }}>
-                <p >you already signed up</p>
+                <p >You already signed up</p>
                 <Button href='/dashboard' block={true}
                     style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)', width: "150px" }} >
-                    go to dashboard
+                    Go to dashboard
                 </Button>
             </div>
         )

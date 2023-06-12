@@ -5,7 +5,7 @@ import { Button, Result } from 'antd';
 const Success = () => (
   <Result
     status="success"
-    title="Successfully Purchased Cloud Server ECS!"
+    title="Email Successfully Validated"
     extra={[
       <Button href='/login' key={'login'}>
         Go To Login Page

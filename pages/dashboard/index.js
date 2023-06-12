@@ -98,12 +98,12 @@ export default function Home() {
                             xs={{ span: 14, offset: 2 }}
                             style={{ marginTop: "50px", marginBottom: "50px" }}>
                             <div style={{ display: "block" }}>
-                                <h3>User Info</h3>
+                                {/* <h3>User Info</h3>
                                 <p style={{ color: "#3bb944" }}>Username :
                                     <span
                                         style={{ color: "#c2ccce" }}>{session ? session.username : decodedToken.username}
                                     </span>
-                                </p>
+                                </p> */}
                                 <p style={{ color: "#3bb944" }}>email :
                                     <span style={{ color: "#c2ccce" }}>
                                         {session ? session.email : decodedToken.email}
