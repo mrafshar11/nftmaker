@@ -22,4 +22,3 @@ if (!global._mongoClientPromise) {
 
 export const connectMongo = async () => mongoose.connect(uri).then(console.log('connected'));
 
-// export default clientPromise
