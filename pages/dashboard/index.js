@@ -1,152 +1,343 @@
-import Head from 'next/head';
+import Head from "next/head";
 import Link from "next/link";
-import { Button, Upload } from 'antd';
-import ImgCrop from 'antd-img-crop';
+import { Upload } from "antd";
+import ImgCrop from "antd-img-crop";
 import Image from "next/image";
-import { Row, Col } from 'antd';
+import { Row, Col, Input, Button } from "antd";
+import {
+  CloudUploadOutlined,
+  DownloadOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-
+import Header from "../../components/header";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-axios.interceptors.response.use(null, error => {
-    const expectedErrors =
-        error.response &&
-        error.response.status >= 400 &&
-        error.response.status < 500;
-    if (!expectedErrors) {
-        console.log(error)
-    }
-    return Promise.reject(error)
+axios.interceptors.response.use(null, (error) => {
+  const expectedErrors =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+  if (!expectedErrors) {
+    console.log(error);
+  }
+  return Promise.reject(error);
 });
-
 
 /* eslint-enable no-template-curly-in-string */
 
 export default function Home() {
-    const { data: session } = useSession()
-    const [fileList, setFileList] = useState([]);
-    const [decodedToken, setDecodedToken] = useState();
+  const { data: session } = useSession();
+  const [decodedToken, setDecodedToken] = useState();
 
-    const jwtsecret =process.env.JWT_SECRET;
-    const url1 = process.env.URL1;
+  const [fileUrl, setFileUrl] = useState("");
+  const [mediaItems, setMediaItems] = useState([]);
+  const [mediaFile, setmediaFile] = useState([]);
 
-    useEffect(() => {
-        const token = localStorage.getItem('token')
-        const decoded = jwt.decode(token, jwtsecret);
-        if (Date.now() / 1000 < parseInt(decoded?.exp)) {
-            setDecodedToken(decoded)
-        }
+  const jwtsecret = process.env.JWT_SECRET;
+  const url1 = process.env.URL1;
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const decoded = jwt.decode(token, jwtsecret);
+    if (Date.now() / 1000 < parseInt(decoded?.exp)) {
+      setDecodedToken(decoded);
     }
-        , [])
+  }, []);
 
-
-    const onChange = ({ fileList: newFileList }) => {
-        if (fileList.length < 2) {
-            setFileList(newFileList);
-        }
-    };
-
-
-    const handleSend = async () => {
-        let res = await axios.post(url1, fileList)
-        console.log(res);
+  const onChange = (e) => {
+    if (mediaFile.length === 0) {
+      setFileUrl(e.target.value);
+      setMediaItems([
+        <div className="media-container">
+          <img
+            src={e.target.value}
+            style={{ width: "350px", height: "300px" }}
+          />
+        </div>,
+      ]);
     }
+  };
 
-    if (!decodedToken) {
-        return (
-            <div style={{ textAlign: "center", marginTop: "200px" }}>
-                <p >your login is expired</p>
-                <Button href='/login' block={true}
-                    style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)', width: "150px" }} >
-                    go to login page
-                </Button>
-            </div>
-        )
+  const addFile = (e) => {
+    let file = e.target.files[0];
+
+    if (
+      file &&
+      (file.type === "image/jpeg" || file.type === "image/png") &&
+      file.size <= 3000000
+    ) {
+      const reader = new FileReader();
+      let files = [...mediaFile];
+      files[0] = file;
+      setmediaFile(files);
+
+      reader.onload = function (e) {
+        let srcValue = e.target.result;
+
+        setMediaItems([
+          <div className="media-container">
+            <img src={srcValue} style={{ width: "350px", height: "300px" }} />
+          </div>,
+        ]);
+      };
+
+      reader.readAsDataURL(file);
+    } else if (file && file.type === "video/mp4" && file.size < 5000000) {
+      const reader = new FileReader();
+      let files = [...mediaFile];
+
+      files[0] = file;
+      setmediaFile(files);
+
+      reader.onload = function (e) {
+        let srcValue = e.target.result;
+
+        setMediaItems([
+          <div className="post-file">
+            <video controls>
+              <source src={srcValue} />
+            </video>
+          </div>,
+        ]);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      Swal.fire({
+        icon: "error",
+        text: "لطفا برای بارگذاری فایل موارد الزامی را رعایت فرمایید !",
+        confirmButtonText: "باشه",
+      });
     }
+  };
 
+  const handleSend = async () => {
+    console.log(mediaFile);
+    let sendingData = new FormData();
+    sendingData.append("file", mediaFile[0]);
+    console.log(sendingData);
 
+    const res = await fetch(
+      "https://zero-right-api-l4ykvsnt5a-uw.a.run.app/upload_file/",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: sendingData,
+      }
+    );
+    console.log(res);
+  };
 
+  if (!decodedToken) {
     return (
-        <>
-            <Head>
-                <title>Create Next App</title>
-                <meta name="description" content="Generated by create next app" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-            </Head>
+      <div style={{ textAlign: "center", marginTop: "200px" }}>
+        <p>your login is expired</p>
+        <Button
+          href="/login"
+          block={true}
+          style={{
+            backgroundColor: "rgb(125 211 252)",
+            color: "rgb(15 23 42)",
+            width: "150px",
+          }}
+        >
+          go to login page
+        </Button>
+      </div>
+    );
+  }
 
-            <section style={{ border: "1px solid rgb(30 41 59)", borderRadius: "8px", marginTop: "20px" }}>
-                <div className='container'>
-                    <Row>
-                        <Col style={{ marginTop: "30px", marginLeft: "40px" }}>
-                            {/* <Image alt="Picture of the author"
-                                width={100}
-                                height={100}
-                                style={{ borderRadius: "50%" }}
-                            // src='https://optimise2.assets-servd.host/maniacal-finch/production/animals/amur-tiger-01-01.jpg?w=1200&h=630&q=82&auto=format&fit=clip&dm=1658935145&s=42eaff37ee45905b3f1a70241c25d007'
-                            /> */}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col
-                            lg={{ span: 11, offset: 1 }}
-                            md={{ span: 13, offset: 2 }}
-                            sm={{ span: 14, offset: 2 }}
-                            xs={{ span: 14, offset: 2 }}
-                            style={{ marginTop: "50px", marginBottom: "50px" }}>
-                            <div style={{ display: "block" }}>
-                                {/* <h3>User Info</h3>
-                                <p style={{ color: "#3bb944" }}>Username :
-                                    <span
-                                        style={{ color: "#c2ccce" }}>{session ? session.username : decodedToken.username}
-                                    </span>
-                                </p> */}
-                                <p style={{ color: "#3bb944" }}>email :
-                                    <span style={{ color: "#c2ccce" }}>
-                                        {session ? session.email : decodedToken.email}
-                                    </span>
-                                </p>
-                            </div>
-                        </Col>
-                        <Col
-                            lg={{ span: 5 }}
-                            md={{ span: 7 }}
-                            sm={{ span: 8 }}
-                            xs={{ span: 8 }}
-                            style={{ marginTop: "50px", marginBottom: "50px" }}>
-                            <ImgCrop rotationSlider>
-                                <Upload
-                                    maxCount={1}
-                                    listType="picture-card"
-                                    fileList={fileList}
-                                    onChange={onChange}
-                                    style={{ color: "red" }}
-                                >
-                                    {fileList.length < 1 && '+ Upload'}
-                                </Upload>
-                            </ImgCrop>
-                        </Col>
-                        <Col
-                            lg={{ span: 3 }}
-                            md={{ span: 5, offset: 3 }}
-                            sm={{ span: 8, offset: 5 }}
-                            xs={{ span: 8, offset: 5 }}
-                            style={{ marginTop: "50px", marginBottom: "50px", color: "red" }}>
-                            <Button block={true} onClick={e => handleSend()}
-                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)' }} >
-                                Convert
-                            </Button>
-                            <Button href='/payment' block={true}
-                                style={{ backgroundColor: 'rgb(125 211 252)', color: 'rgb(15 23 42)', marginTop: "25px" }} >
-                                Buy Subscription
-                            </Button>
-                        </Col>
-                    </Row>
-                </div>
-            </section>
-        </>
-    )
+  const handleRemoveMedia = () => {
+    console.log("ok");
+    setmediaFile([]);
+    setMediaItems([]);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Create Next App</title>
+        <meta name="description" content="Generated by create next app" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+
+      <section style={{ borderRadius: "8px", marginTop: "20px" }}>
+        <div className="container">
+          <Header />
+          <Row>
+            <Col
+              lg={{ span: 10, offset: 7 }}
+              md={{ span: 7 }}
+              sm={{ span: 8 }}
+              xs={{ span: 8 }}
+              className="media-input"
+              style={{
+                marginTop: "50px",
+                textAlign: "center",
+                position: "relative",
+              }}
+            >
+              <label
+                htmlFor="choose-file"
+                className="choose-label"
+                style={{ display: mediaItems.length > 0 ? "none" : "block" }}
+              >
+                <CloudUploadOutlined style={{ fontSize: "70px" }} />
+              </label>
+              <label
+                style={{ display: mediaItems.length > 0 ? "none" : "block" }}
+                htmlFor="choose-file"
+                className="choose-label2"
+              >
+                upload your image here
+              </label>
+              <input
+                hidden={true}
+                type="file"
+                id="choose-file"
+                name="storyFile"
+                onChange={(e) => {
+                  return addFile(e);
+                }}
+              />
+              {mediaItems}
+              <DeleteOutlined
+                onClick={handleRemoveMedia}
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  left: "20px",
+                  fontSize: "21px",
+                  display: mediaItems.length > 0 ? "block" : "none",
+                  cursor: "pointer",
+                }}
+              />
+            </Col>
+            <Col
+              lg={{ span: 10, offset: 7 }}
+              md={{ span: 7 }}
+              sm={{ span: 8 }}
+              xs={{ span: 8 }}
+              style={{ marginTop: "20px", marginBottom: "20px" }}
+            >
+              <p className="dest">or</p>
+            </Col>
+            <Col
+              lg={{ span: 10, offset: 7 }}
+              md={{ span: 7 }}
+              sm={{ span: 8 }}
+              xs={{ span: 8 }}
+              className="media-input-url"
+              style={{ marginBottom: "10px" }}
+            >
+              <Row>
+                <Col lg={{ span: 19 }}>
+                  <Input
+                    onChange={onChange}
+                    placeholder="Enter image URL"
+                    style={{ display: "inline-block" }}
+                    size="large"
+                  />
+                </Col>
+                <Col lg={{ span: 4, offset: 1 }}>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block={true}
+                    onClick={handleSend}
+                  >
+                    GO
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: "100px", marginBottom: "50px" }}>
+            <Col md={{ span: 16, offset: 4 }}>
+              <h2 style={{ fontSize: "25px" }}>Image history</h2>
+            </Col>
+            <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "50px" }}>
+              <Row style={{ alignItems: "center" }}>
+                <Col md={{ span: 1 }}>#201</Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                  <Image
+                    width={55}
+                    height={55}
+                    src={"/images/index6.jpg"}
+                    style={{ borderRadius: "10px" }}
+                  />
+                </Col>
+                <Col md={{ span: 14, offset: 1 }}>
+                  <Input />
+                </Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                  <Link
+                    style={{ fontSize: "22px", color: "#9c9ea1" }}
+                    href="./"
+                  >
+                    <DownloadOutlined />
+                  </Link>
+                </Col>
+              </Row>
+            </Col>
+            <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "30px" }}>
+              <Row style={{ alignItems: "center" }}>
+                <Col md={{ span: 1 }}>#201</Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                  <Image
+                    width={55}
+                    height={55}
+                    src={"/images/index6.jpg"}
+                    style={{ borderRadius: "10px" }}
+                  />
+                </Col>
+                <Col md={{ span: 14, offset: 1 }}>
+                  <Input />
+                </Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                  <Link
+                    style={{ fontSize: "22px", color: "#9c9ea1" }}
+                    href="./"
+                  >
+                    <DownloadOutlined />
+                  </Link>
+                </Col>
+              </Row>
+            </Col>
+            <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "30px" }}>
+              <Row style={{ alignItems: "center" }}>
+                <Col md={{ span: 1 }}>#201</Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                  <Image
+                    width={55}
+                    height={55}
+                    src={"/images/index6.jpg"}
+                    style={{ borderRadius: "10px" }}
+                  />
+                </Col>
+                <Col md={{ span: 14, offset: 1 }}>
+                  <Input />
+                </Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                  <Link
+                    style={{ fontSize: "22px", color: "#9c9ea1" }}
+                    href="./"
+                  >
+                    <DownloadOutlined />
+                  </Link>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+      </section>
+    </>
+  );
 }
