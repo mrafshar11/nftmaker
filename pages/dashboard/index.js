@@ -7,6 +7,7 @@ import { Row, Col, Input, Button } from "antd";
 import {
   CloudUploadOutlined,
   DownloadOutlined,
+  CopyrightOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -109,8 +110,8 @@ export default function Home() {
     } else {
       Swal.fire({
         icon: "error",
-        text: "لطفا برای بارگذاری فایل موارد الزامی را رعایت فرمایید !",
-        confirmButtonText: "باشه",
+        text: "Please verify your file before submission!",
+        confirmButtonText: "agree",
       });
     }
   };
@@ -122,7 +123,7 @@ export default function Home() {
     console.log(sendingData);
 
     const res = await fetch(
-      "https://zero-right-api-l4ykvsnt5a-uw.a.run.app/upload_file/",
+      "https://zero-right-api-l4ykvsnt5a-uw.a.run.app/file_validation/",
       {
         method: "POST",
         headers: {
@@ -148,7 +149,7 @@ export default function Home() {
             width: "150px",
           }}
         >
-          go to login page
+          login expired, Please login again
         </Button>
       </div>
     );
@@ -196,7 +197,7 @@ export default function Home() {
                 htmlFor="choose-file"
                 className="choose-label2"
               >
-                upload your image here
+                upload your media file here
               </label>
               <input
                 hidden={true}
@@ -227,7 +228,7 @@ export default function Home() {
               xs={{ span: 8 }}
               style={{ marginTop: "20px", marginBottom: "20px" }}
             >
-              <p className="dest">or</p>
+              {/* <p className="dest">or</p> */}
             </Col>
             <Col
               lg={{ span: 10, offset: 7 }}
@@ -238,22 +239,27 @@ export default function Home() {
               style={{ marginBottom: "10px" }}
             >
               <Row>
-                <Col lg={{ span: 19 }}>
+                {/* <Col lg={{ span: 19 }}>
                   <Input
                     onChange={onChange}
                     placeholder="Enter image URL"
                     style={{ display: "inline-block" }}
                     size="large"
                   />
-                </Col>
-                <Col lg={{ span: 4, offset: 1 }}>
+                </Col> */}
+                <Col lg={{ span: 16, offset: 4 }} 
+                        style={{
+                        alignItems: "center",
+                        textAlign: "center",
+                        position: "relative",
+                    }}>
                   <Button
                     type="primary"
                     size="large"
                     block={true}
                     onClick={handleSend}
                   >
-                    GO
+                    Submit
                   </Button>
                 </Col>
               </Row>
@@ -261,27 +267,57 @@ export default function Home() {
           </Row>
           <Row style={{ marginTop: "100px", marginBottom: "50px" }}>
             <Col md={{ span: 16, offset: 4 }}>
-              <h2 style={{ fontSize: "25px" }}>Image history</h2>
+              <h2 style={{ fontSize: "25px" }}>Media History</h2>
             </Col>
             <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "50px" }}>
               <Row style={{ alignItems: "center" }}>
-                <Col md={{ span: 1 }}>#201</Col>
+                <Col md={{ span: 2 }}>#101</Col>
+                <Col md={{ span: 2 }}>06/01/2023</Col>
                 <Col md={{ span: 2, offset: 1 }}>
                   <Image
                     width={55}
                     height={55}
-                    src={"/images/index6.jpg"}
+                    src={"/images/ZeroRight.svg"}
                     style={{ borderRadius: "10px" }}
                   />
                 </Col>
-                <Col md={{ span: 14, offset: 1 }}>
-                  <Input />
+                <Col md={{ span: 3, offset: 0 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://testnets.opensea.io/assets/goerli/0xd76f5c1f86677e942a8443e8968b2548925025f1/46"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary">Market Place</Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 3, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary">Etherscan link</Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 3, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary"> Original Media </Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary"> Replica </Button>
+                    </Link>
                 </Col>
                 <Col md={{ span: 2, offset: 1 }}>
                   <Link
                     style={{ fontSize: "22px", color: "#9c9ea1" }}
-                    href="./"
-                  >
+                    href="https://storage.googleapis.com/download/storage/v1/b/zeroright-nft/o/6486a1dd851585cf965d58d0%2F2023%2F06%2F25%2F01:25:20_data%2F2.txt?generation=1687681495754872&alt=media"
+                    target="_blank"> 
                     <DownloadOutlined />
                   </Link>
                 </Col>
@@ -289,23 +325,53 @@ export default function Home() {
             </Col>
             <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "30px" }}>
               <Row style={{ alignItems: "center" }}>
-                <Col md={{ span: 1 }}>#201</Col>
+              <Col md={{ span: 2 }}>#102</Col>
+                <Col md={{ span: 2 }}>06/02/2023</Col>
                 <Col md={{ span: 2, offset: 1 }}>
                   <Image
                     width={55}
                     height={55}
-                    src={"/images/index6.jpg"}
+                    src={"/images/ZeroRight.svg"}
                     style={{ borderRadius: "10px" }}
                   />
                 </Col>
-                <Col md={{ span: 14, offset: 1 }}>
-                  <Input />
+                <Col md={{ span: 3, offset: 0 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://testnets.opensea.io/assets/goerli/0xd76f5c1f86677e942a8443e8968b2548925025f1/46"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary">Market Place</Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 3, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary">Etherscan Link</Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 3, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary"> Original Media </Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary"> Replica </Button>
+                    </Link>
                 </Col>
                 <Col md={{ span: 2, offset: 1 }}>
                   <Link
                     style={{ fontSize: "22px", color: "#9c9ea1" }}
-                    href="./"
-                  >
+                    href="https://storage.googleapis.com/download/storage/v1/b/zeroright-nft/o/6486a1dd851585cf965d58d0%2F2023%2F06%2F25%2F01:25:20_data%2F2.txt?generation=1687681495754872&alt=media"
+                    target="_blank"> 
                     <DownloadOutlined />
                   </Link>
                 </Col>
@@ -313,23 +379,53 @@ export default function Home() {
             </Col>
             <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "30px" }}>
               <Row style={{ alignItems: "center" }}>
-                <Col md={{ span: 1 }}>#201</Col>
+              <Col md={{ span: 2 }}>#103</Col>
+                <Col md={{ span: 2 }}>06/03/2023</Col>
                 <Col md={{ span: 2, offset: 1 }}>
                   <Image
                     width={55}
                     height={55}
-                    src={"/images/index6.jpg"}
+                    src={"/images/ZeroRight.svg"}
                     style={{ borderRadius: "10px" }}
                   />
                 </Col>
-                <Col md={{ span: 14, offset: 1 }}>
-                  <Input />
+                <Col md={{ span: 3, offset: 0 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://testnets.opensea.io/assets/goerli/0xd76f5c1f86677e942a8443e8968b2548925025f1/46"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary">Market Place</Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 3, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary">Etherscan Link</Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 3, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary"> Original Media </Button>
+                    </Link>
+                </Col>
+                <Col md={{ span: 2, offset: 1 }}>
+                    <Link
+                        style={{ fontSize: "32px", color: "#9c9ea1" }}
+                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
+                        target="_blank" >
+                        <Button variant="contained" color="secondary"> Replica </Button>
+                    </Link>
                 </Col>
                 <Col md={{ span: 2, offset: 1 }}>
                   <Link
                     style={{ fontSize: "22px", color: "#9c9ea1" }}
-                    href="./"
-                  >
+                    href="https://storage.googleapis.com/download/storage/v1/b/zeroright-nft/o/6486a1dd851585cf965d58d0%2F2023%2F06%2F25%2F01:25:20_data%2F2.txt?generation=1687681495754872&alt=media"
+                    target="_blank"> 
                     <DownloadOutlined />
                   </Link>
                 </Col>
