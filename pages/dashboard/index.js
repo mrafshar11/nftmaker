@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import Image from "next/image";
+import FormData from 'form-data';
 import { Row, Col, Input, Button } from "antd";
 import {
   CloudUploadOutlined,
@@ -15,6 +16,11 @@ import { useState, useEffect } from "react";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import Header from "../../components/header";
+
+const baseUrl = "https://zero-right-api-l4ykvsnt5a-uw.a.run.app";
+// const baseUrl = "http://0.0.0.0:8080";
+const addUrl = baseUrl + "/file_validation/";
+
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -116,30 +122,79 @@ export default function Home() {
     }
   };
 
-  const handleSend = async () => {
-    console.log(mediaFile);
-    let sendingData = new FormData();
-    sendingData.append("file", mediaFile[0]);
-    console.log(sendingData);
 
-    const res = await fetch(
-      "https://zero-right-api-l4ykvsnt5a-uw.a.run.app/file_validation/",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: sendingData,
-      }
-    );
-    console.log(res);
+//   const handleSend1 = async () => {
+//     console.log(mediaFile);
+//     let sendingData = new FormData();
+//     sendingData.append("file", mediaFile[0]);
+//     console.log(sendingData);
+
+//     const res = await fetch(
+//       "https://zero-right-api-l4ykvsnt5a-uw.a.run.app/file_validation/",
+//       {
+//         method: "POST",
+//         headers: {
+//           Accept: "application/json",
+//           "Content-Type": "application/json",
+//         },
+//         body: sendingData,
+//       }
+//     );
+//     console.log(res);
+//   };
+
+
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSend = async () => {
+    console.log('file is ok', mediaFile);
+    const sendingData = new FormData();
+    const userRiid = '6486a1dd851585cf965d58d0';
+    const metaDataJson = '{"name": "Hi"}';
+    sendingData.append("file", mediaFile[0]);
+    sendingData.append('riid', userRiid);
+    sendingData.append('meta_data', metaDataJson);
+
+    console.log('sendingdata', sendingData);
+    setLoading(true);
+
+    try {
+        const response = await axios.post(addUrl, sendingData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          params: {
+            riid: userRiid,
+            meta_data: metaDataJson
+          }
+        });
+        
+        // Handle the response here
+        console.log(response)
+        if (response.status === 200) {
+            // Assuming the response contains a 'results' property as a list of dictionaries
+            const results = response.data.body;
+            setResults(results);
+            setError(null);
+          } else {
+            
+            setError(error.message || 'API request failed.');
+          }
+        
+    } catch (error) {
+        setError(error.message || 'API request failed call.');
+    } finally {
+      setLoading(false);
+    }
+    
   };
 
   if (!decodedToken) {
     return (
       <div style={{ textAlign: "center", marginTop: "200px" }}>
-        <p>your login is expired</p>
+        <p> Login Expired</p>
         <Button
           href="/login"
           block={true}
@@ -149,7 +204,7 @@ export default function Home() {
             width: "150px",
           }}
         >
-          login expired, Please login again
+          Login Expired, Please Login Again
         </Button>
       </div>
     );
@@ -257,7 +312,9 @@ export default function Home() {
                     type="primary"
                     size="large"
                     block={true}
-                    onClick={handleSend}
+                    onClick={(e) => {
+                        return handleSend(e);
+                      }}
                   >
                     Submit
                   </Button>
@@ -269,58 +326,59 @@ export default function Home() {
             <Col md={{ span: 16, offset: 4 }}>
               <h2 style={{ fontSize: "25px" }}>Media History</h2>
             </Col>
-            <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "50px" }}>
-              <Row style={{ alignItems: "center" }}>
-                <Col md={{ span: 2 }}>#101</Col>
-                <Col md={{ span: 2 }}>06/01/2023</Col>
-                <Col md={{ span: 2, offset: 1 }}>
-                  <Image
-                    width={55}
-                    height={55}
-                    src={"/images/ZeroRight.svg"}
-                    style={{ borderRadius: "10px" }}
-                  />
-                </Col>
-                <Col md={{ span: 3, offset: 0 }}>
-                    <Link
-                        style={{ fontSize: "32px", color: "#9c9ea1" }}
-                        href="https://testnets.opensea.io/assets/goerli/0xd76f5c1f86677e942a8443e8968b2548925025f1/46"
-                        target="_blank" >
-                        <Button variant="contained" color="secondary">Market Place</Button>
-                    </Link>
-                </Col>
-                <Col md={{ span: 3, offset: 1 }}>
-                    <Link
-                        style={{ fontSize: "32px", color: "#9c9ea1" }}
-                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
-                        target="_blank" >
-                        <Button variant="contained" color="secondary">Etherscan link</Button>
-                    </Link>
-                </Col>
-                <Col md={{ span: 3, offset: 1 }}>
-                    <Link
-                        style={{ fontSize: "32px", color: "#9c9ea1" }}
-                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
-                        target="_blank" >
-                        <Button variant="contained" color="secondary"> Original Media </Button>
-                    </Link>
-                </Col>
-                <Col md={{ span: 2, offset: 1 }}>
-                    <Link
-                        style={{ fontSize: "32px", color: "#9c9ea1" }}
-                        href="https://Goerli.etherscan.io/tx/0x75220d13f15102e4585be36918f8db3fc9762618650117a7b8c72b276d216c8b"
-                        target="_blank" >
-                        <Button variant="contained" color="secondary"> Replica </Button>
-                    </Link>
-                </Col>
-                <Col md={{ span: 2, offset: 1 }}>
-                  <Link
-                    style={{ fontSize: "22px", color: "#9c9ea1" }}
-                    href="https://storage.googleapis.com/download/storage/v1/b/zeroright-nft/o/6486a1dd851585cf965d58d0%2F2023%2F06%2F25%2F01:25:20_data%2F2.txt?generation=1687681495754872&alt=media"
-                    target="_blank"> 
-                    <DownloadOutlined />
-                  </Link>
-                </Col>
+            
+           
+              <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "50px" }}>
+                <Row style={{ alignItems: "center" }}>
+                    <Col md={{ span: 2 }}>{results.date_time || ""} </Col>
+                    { results.length > 0 && (<Col md={{ span: 2, offset: 2 }}>
+                    <Image
+                        width={55}
+                        height={55}
+                        src={results.original_media}
+                        style={{ borderRadius: "10px" }}
+                    />
+                    </Col>
+                    )}
+                    { Object.keys(results).length > 0 && (<Col md={{ span: 3, offset: 0 }}>
+                        <Link
+                            id="opensea"
+                            style={{ fontSize: "32px", color: "#9c9ea1" }}
+                            href= {results.opensea_link}
+                            target="_blank" >
+                            <Button variant="contained" color="secondary">Market Place</Button>
+                        </Link>
+                    </Col>)
+                    }
+                    { Object.keys(results).length > 0 && (<Col md={{ span: 3, offset: 1 }}>
+                        <Link
+                            style={{ fontSize: "32px", color: "#9c9ea1" }}
+                            href={results.etherscan_link}
+                            target="_blank" >
+                            <Button variant="contained" color="secondary">Etherscan link</Button>
+                        </Link>
+                    </Col>
+                    )}
+                    { Object.keys(results).length > 0 && (<Col md={{ span: 3, offset: 1 }}>
+                        <Link
+                            style={{ fontSize: "32px", color: "#9c9ea1" }}
+                            href={results.original_media || "#"}
+                            target="_blank" >
+                            <Button variant="contained" color="secondary"> Original Media </Button>
+                        </Link>
+                    </Col>
+                    )}
+                    { Object.keys(results).length > 0 && (<Col md={{ span: 2, offset: 1 }}>
+                        <Link
+                            style={{ fontSize: "32px", color: "#9c9ea1" }}
+                            href={results.watermark_media || "#"}
+                            target="_blank" >
+                            <Button variant="contained" color="secondary"> Replica </Button>
+                        </Link>
+                    </Col>
+                    )}
+                
+                
               </Row>
             </Col>
             <Col md={{ span: 16, offset: 4 }} style={{ marginTop: "30px" }}>
