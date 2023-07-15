@@ -91,59 +91,7 @@ const DirectSignUp = () => {
                         validateMessages={validateMessages}
                     >
                         <Row>
-                            <Col lg={{ span: 11, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
-                                <Form.Item
-                                    name={['name']}
-                                    label="Name"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                    style={{
-                                        marginBottom: "40px"
-                                    }}
-                                    labelCol={{ span: 9 }}
-                                >
-                                    <Input size='large' value={'name'} />
-                                </Form.Item>
-                            </Col>
-                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
-                                <Form.Item
-                                    name={['lastName']}
-                                    label="LastName"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                    style={{
-                                        marginBottom: "40px"
-                                    }}
-                                    labelCol={{ span: 9 }}
-                                >
-                                    <Input size='large' />
-                                </Form.Item></Col>
-                        </Row>
-                        <Row>
-                            <Col lg={{ span: 11, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
-                                <Form.Item
-                                    name={['username']}
-                                    label="Username"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                    style={{
-                                        marginBottom: "40px"
-                                    }}
-                                    labelCol={{ span: 9 }}
-                                >
-                                    <Input size='large' />
-                                </Form.Item>
-                            </Col>
-                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
+                            <Col lg={{ span: 18, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['email']}
                                     label="Email"
@@ -154,16 +102,14 @@ const DirectSignUp = () => {
                                         },
                                     ]}
                                     style={{
-                                        marginBottom: "40px"
+                                        marginBottom: "80px"
                                     }}
                                     labelCol={{ span: 9 }}
                                 >
                                     <Input size='large' />
                                 </Form.Item>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col lg={{ span: 11, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
+                            <Col lg={{ span: 18, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['password']}
                                     label="Password"
@@ -180,7 +126,7 @@ const DirectSignUp = () => {
                                     <Input.Password size='large' />
                                 </Form.Item>
                             </Col>
-                            <Col lg={{ span: 11, offset: 2 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
+                            <Col lg={{ span: 18, offset: 0 }} md={{ span: 16, offset: 3 }} sm={{ span: 20, offset: 1 }}>
                                 <Form.Item
                                     name={['confirmPassword']}
                                     label="Confirm Password"
